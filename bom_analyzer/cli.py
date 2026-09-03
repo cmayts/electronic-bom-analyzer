@@ -6,7 +6,7 @@ import argparse
 from pathlib import Path
 
 from .analyzer import analyze
-from .io import read_bom, write_json, write_normalized_csv
+from .io import read_bom, write_html_report, write_json, write_normalized_csv
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -28,8 +28,10 @@ def main(argv: list[str] | None = None) -> int:
     args.output.mkdir(parents=True, exist_ok=True)
     report_path = args.output / "bom_report.json"
     normalized_path = args.output / "normalized_bom.csv"
+    html_path = args.output / "bom_report.html"
     write_json(report_path, {key: value for key, value in report.items() if key != "normalized_rows"})
     write_normalized_csv(normalized_path, report["normalized_rows"])
+    write_html_report(html_path, report)
 
     summary = report["summary"]
     print(f"Rows read: {summary['rows_read']}")
@@ -38,4 +40,5 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Warnings: {summary['warnings']}")
     print(f"Report: {report_path}")
     print(f"Normalized BOM: {normalized_path}")
+    print(f"HTML report: {html_path}")
     return 1 if summary["errors"] else 0
