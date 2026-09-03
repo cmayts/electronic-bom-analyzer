@@ -1,6 +1,10 @@
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from bom_analyzer.analyzer import analyze
+from bom_analyzer.io import write_html_report
+from bom_analyzer.providers import DisabledProvider
 
 
 class AnalyzerTests(unittest.TestCase):
@@ -43,6 +47,20 @@ class AnalyzerTests(unittest.TestCase):
         report = analyze([{"Description": "Unknown part"}])
         codes = [issue["code"] for issue in report["issues"]]
         self.assertGreaterEqual(codes.count("missing_column"), 2)
+
+    def test_html_report_is_written(self):
+        report = analyze([{"MPN": "ABC", "Manufacturer": "Maker", "Description": "Part", "Qty": "1"}])
+        with TemporaryDirectory() as directory:
+            target = Path(directory) / "report.html"
+            write_html_report(target, report)
+            content = target.read_text(encoding="utf-8")
+        self.assertIn("Electronic BOM Analysis Report", content)
+        self.assertIn("Unique components", content)
+
+    def test_disabled_provider_does_not_invent_data(self):
+        result = DisabledProvider().lookup("ABC-123")
+        self.assertEqual(result.manufacturer_part_number, "ABC-123")
+        self.assertIsNone(result.stock_quantity)
 
 
 if __name__ == "__main__":
