@@ -1,0 +1,6 @@
+Item Number,Manufacturer,MPN,Description,Qty,Reference Designators
+1001,Texas Instruments,LM358DR,Dual operational amplifier,2,"U1, U2"
+1002,Yageo,RC0603FR-0710KL,10 kOhm resistor,4,"R1, R2, R3, R4"
+1003,Texas Instruments,LM358DR,Dual operational amplifier,1,U3
+1004,,GRM188R71C104KA01D,100 nF ceramic capacitor,6,"C1, C2, C3, C4, C5, C6"
+1005,Wurth Elektronik,744773102,10 uH power inductor,0,L1
