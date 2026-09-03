@@ -11,7 +11,9 @@ A privacy-safe command-line tool for validating electronic Bills of Materials (B
 - Conflict detection for inconsistent manufacturer or description data
 - Reference-designator duplicate detection
 - Consolidated component quantities
-- JSON issue report and normalized CSV output
+- JSON and standalone HTML issue reports plus normalized CSV output
+- Privacy-safe extension interface for official lifecycle/stock APIs
+- GitHub Actions tests on Python 3.10 and 3.12
 - Standard-library test suite
 
 ## Installation
@@ -20,6 +22,11 @@ Python 3.10 or newer is recommended.
 
 ```bash
 python -m venv .venv
+```
+
+Activate the environment and install the optional XLSX dependency:
+
+```bash
 python -m pip install -r requirements.txt
 ```
 
@@ -33,11 +40,26 @@ Analyze the included synthetic example:
 python -m bom_analyzer examples/synthetic_bom.csv --output results
 ```
 
-The command creates `normalized_bom.csv` and `bom_report.json`. Exit code `0` means no errors were found; exit code `1` means validation errors exist.
+The command creates:
+
+- `normalized_bom.csv`: normalized and consolidated BOM data
+- `bom_report.json`: summary, warnings, and errors
+- `bom_report.html`: portable visual report for engineering review
+
+Exit code `0` means that no errors were found. Exit code `1` means that the BOM contains validation errors.
 
 ## Supported columns
 
-The analyzer recognizes common aliases for part number, manufacturer, manufacturer part number, description, quantity, and reference designators. Column matching ignores case, spaces, hyphens, and underscores.
+The analyzer recognizes common aliases for:
+
+- `part_number`
+- `manufacturer`
+- `manufacturer_part_number`
+- `description`
+- `quantity`
+- `references`
+
+Column matching ignores case, spaces, hyphens, and underscores. See `bom_analyzer/schema.py` for the complete alias list.
 
 ## Example output
 
@@ -48,7 +70,12 @@ Errors: 1
 Warnings: 2
 Report: results/bom_report.json
 Normalized BOM: results/normalized_bom.csv
+HTML report: results/bom_report.html
 ```
+
+![Electronic BOM Analyzer demonstration](docs/demo.gif)
+
+A static preview is also available at [`docs/report-preview.png`](docs/report-preview.png).
 
 The data under `examples/` is synthetic and contains no customer, supplier, pricing, or procurement information.
 
@@ -60,7 +87,7 @@ python -m unittest discover -s tests -v
 
 ## Scope and limitations
 
-This project performs structural validation and consolidation. It does not access distributor systems, recommend real substitute components, verify lifecycle status, or make purchasing decisions. Engineering review of datasheets and application requirements remains necessary.
+This project performs structural validation and consolidation. Optional lifecycle or stock integrations are disabled by default and must use documented vendor APIs with user-supplied credentials. The tool does not recommend real substitute components or make purchasing decisions. Engineering review of datasheets and application requirements remains necessary.
 
 ## License
 
