@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "electronic-bom-analyzer"
+version = "0.1.0"
+description = "Validate and normalize electronic Bills of Materials."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Cem Aytaş"}]
+dependencies = ["openpyxl>=3.1,<4"]
+
+[project.scripts]
+bom-analyzer = "bom_analyzer.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["bom_analyzer*"]
